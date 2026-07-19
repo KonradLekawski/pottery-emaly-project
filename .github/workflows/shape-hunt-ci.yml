@@ -28,7 +28,9 @@ jobs:
           test -f apps/shape-hunt/extensions.css
           test -f apps/shape-hunt/cultural-engine.css
           test -f apps/shape-hunt/fit-system.css
+          test -f apps/shape-hunt/evidence-scoring.css
           test -f apps/shape-hunt/app.js
           test -f apps/shape-hunt/app-extensions.js
           test -f apps/shape-hunt/app-cultural-engine.js
           test -f apps/shape-hunt/app-fit-system.js
+          test -f apps/shape-hunt/app-evidence-scoring.js
