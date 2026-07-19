@@ -17,22 +17,22 @@
   function tableFit(shape){
     const sizes=[120,240,330].map((ml)=>{const s=asSize(shape,ml),lim=TABLE_LIMITS[ml];const h=between(s.height,lim.height),b=between(s.base,lim.base),r=between(s.rim,lim.rim);const score=(midScore(s.height,lim.height)+midScore(s.base,lim.base)+midScore(s.rim,lim.rim))/3;return{ml,shape:s,pass:h&&b&&r,score,h,b,r,lim}});
     const press=num(shape.pressSafeScore,.75)>=.64&&num(shape.angularRisk,.20)<=.50;
-    const score=(sizes.reduce((sum,s)=>sum+s.score,0)/sizes.length)*.72+(press ? .28 : .06);
+    const score=(sizes.reduce((sum,s)=>sum+s.score,0)/sizes.length)*.72+(press ? 0.28 : 0.06);
     return{sizes,pass:sizes.every(s=>s.pass)&&press,score,press};
   }
   function roadConcept(shape,ml){
-    const baseNarrow=ml===350 ? .76 : .78;
+    const baseNarrow=ml===350 ? 0.76 : 0.78;
     const heightMul=ml===350 ? 1.46 : 1.72;
-    const rimMul=ml===350 ? .82 : .86;
+    const rimMul=ml===350 ? 0.82 : 0.86;
     const base=clamp(num(shape.base)*baseNarrow,62,79);
     const height=clamp(num(shape.height)*heightMul,108,168);
     const rim=clamp(num(shape.rim)*rimMul,74,96);
     const lidHeight=ml===350?16:20;
     const closureRing=clamp(rim+4,78,102);
     const sleeve=base<=CUP_HOLDER.safe?'fits most':base<=CUP_HOLDER.many?'fits many':base<=CUP_HOLDER.large?'large/adjustable only':'fails';
-    const fitScore=base<=CUP_HOLDER.safe?1:base<=CUP_HOLDER.many?.78:base<=CUP_HOLDER.large?.42:.10;
-    const stabilityScore=height<=155?.92:height<=168?.70:.42;
-    const lidScore=closureRing<=98?.82:.60;
+    const fitScore=base<=CUP_HOLDER.safe?1:base<=CUP_HOLDER.many?0.78:base<=CUP_HOLDER.large?0.42:0.10;
+    const stabilityScore=height<=155?0.92:height<=168?0.70:0.42;
+    const lidScore=closureRing<=98?0.82:0.60;
     return{ml,height,base,rim,lidHeight,closureRing,sleeve,fitScore,stabilityScore,lidScore,score:fitScore*.58+stabilityScore*.24+lidScore*.18};
   }
   function roadFit(shape){const models=[roadConcept(shape,350),roadConcept(shape,480)];return{models,pass:models.every(m=>m.fitScore>=.70),score:models.reduce((s,m)=>s+m.score,0)/models.length}}
