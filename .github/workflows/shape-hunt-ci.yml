@@ -36,3 +36,4 @@ jobs:
           test -f apps/shape-hunt/app-fit-system.js
           test -f apps/shape-hunt/app-evidence-scoring.js
           test -f apps/shape-hunt/app-research-generator.js
+          test -f apps/shape-hunt/app-interaction-guard.js
