@@ -8,22 +8,22 @@
     330:{height:[76,90],base:[70,82],rim:[94,108],label:'330 ml'}
   };
   const CUP_HOLDER={safe:71,many:77,large:83,depth:65};
-  const FILTER_LABELS={all:'All shapes',table:'Table dimension fit',press:'Pressed steel safe',road:'Road / cup-holder potential'};
 
   function num(v,f=0){return Number.isFinite(Number(v))?Number(v):f}
+  function px(v){return `${Math.round(v)}px`}
   function between(v,r){return num(v)>=r[0]&&num(v)<=r[1]}
-  function midScore(v,r){const c=(r[0]+r[1])/2, span=(r[1]-r[0])/2;return clamp(1-Math.abs(num(v)-c)/Math.max(1,span),0,1)}
+  function midScore(v,r){const c=(r[0]+r[1])/2,span=(r[1]-r[0])/2;return clamp(1-Math.abs(num(v)-c)/Math.max(1,span),0,1)}
   function asSize(shape,ml){return typeof familyAdapt==='function'?familyAdapt(shape,ml):shape}
   function tableFit(shape){
     const sizes=[120,240,330].map((ml)=>{const s=asSize(shape,ml),lim=TABLE_LIMITS[ml];const h=between(s.height,lim.height),b=between(s.base,lim.base),r=between(s.rim,lim.rim);const score=(midScore(s.height,lim.height)+midScore(s.base,lim.base)+midScore(s.rim,lim.rim))/3;return{ml,shape:s,pass:h&&b&&r,score,h,b,r,lim}});
     const press=num(shape.pressSafeScore,.75)>=.64&&num(shape.angularRisk,.20)<=.50;
-    const score=(sizes.reduce((sum,s)=>sum+s.score,0)/sizes.length)*.72+(press?.28:.06);
+    const score=(sizes.reduce((sum,s)=>sum+s.score,0)/sizes.length)*.72+(press ? .28 : .06);
     return{sizes,pass:sizes.every(s=>s.pass)&&press,score,press};
   }
   function roadConcept(shape,ml){
-    const baseNarrow=ml===350?.76:.78;
-    const heightMul=ml===350?1.46:1.72;
-    const rimMul=ml===350?.82:.86;
+    const baseNarrow=ml===350 ? .76 : .78;
+    const heightMul=ml===350 ? 1.46 : 1.72;
+    const rimMul=ml===350 ? .82 : .86;
     const base=clamp(num(shape.base)*baseNarrow,62,79);
     const height=clamp(num(shape.height)*heightMul,108,168);
     const rim=clamp(num(shape.rim)*rimMul,74,96);
@@ -37,7 +37,6 @@
   }
   function roadFit(shape){const models=[roadConcept(shape,350),roadConcept(shape,480)];return{models,pass:models.every(m=>m.fitScore>=.70),score:models.reduce((s,m)=>s+m.score,0)/models.length}}
   function fitClass(f){if(f>=.82)return'fit-good';if(f>=.58)return'fit-warn';return'fit-bad'}
-  function fitText(shape){const tf=tableFit(shape),rf=roadFit(shape);return`table ${Math.round(tf.score*100)} · press ${Math.round(num(shape.pressSafeScore,.75)*100)} · road ${Math.round(rf.score*100)}`}
 
   function installControls(){
     if(q('#fitFilter'))return;
@@ -102,7 +101,7 @@
     if(!pool.length){mount.innerHTML=empty('No candidates for Road Fit yet.','Generate silhouettes first.');return}
     mount.innerHTML='<div class="road-grid"></div>';
     const grid=q('.road-grid',mount);
-    pool.forEach(shape=>{const rf=roadFit(shape);const card=document.createElement('article');card.className='road-card';card.innerHTML=`<div class="road-head"><div><div class="eyebrow">${shape.archetypeName}</div><h3>${shape.id}</h3></div><button class="secondary" data-more>More like this</button></div><div class="road-models">${rf.models.map(m=>`<div class="road-model"><h4>${m.ml} ml road</h4><div class="road-cupholder"><div class="cupholder-ring"></div><div class="road-vessel" style="--base:${m.base};--rim:${m.rim};--h:${m.height}"><span class="lid"></span></div></div><p class="meta">H ${Math.round(m.height)} · base ${Math.round(m.base)} · rim ${Math.round(m.rim)} · closure ring ${Math.round(m.closureRing)}</p><p class="risk ${m.fitScore<.70?'warn':''}">${m.sleeve} · outsourced closure module</p></div>`).join('')}</div><p class="meta road-note">Cup-holder line should use a separate vertical body, gasket/lid supplier interface, and a base ≤71 mm for broadest fit.</p>`;
+    pool.forEach(shape=>{const rf=roadFit(shape);const card=document.createElement('article');card.className='road-card';card.innerHTML=`<div class="road-head"><div><div class="eyebrow">${shape.archetypeName}</div><h3>${shape.id}</h3></div><button class="secondary" data-more>More like this</button></div><div class="road-models">${rf.models.map(m=>`<div class="road-model"><h4>${m.ml} ml road</h4><div class="road-cupholder"><div class="cupholder-ring"></div><div class="road-vessel" style="--basePx:${px(m.base*1.12)};--rimPx:${px(m.rim*1.12)};--heightPx:${px(m.height*1.12)}"><span class="lid"></span></div></div><p class="meta">H ${Math.round(m.height)} · base ${Math.round(m.base)} · rim ${Math.round(m.rim)} · closure ring ${Math.round(m.closureRing)}</p><p class="risk ${m.fitScore<.70?'warn':''}">${m.sleeve} · outsourced closure module</p></div>`).join('')}</div><p class="meta road-note">Cup-holder line should use a separate vertical body, gasket/lid supplier interface, and a base ≤71 mm for broadest fit.</p>`;
       card.addEventListener('click',e=>{if(e.target.closest('[data-more]'))return;openFocus(state.shapes.indexOf(shape))});
       q('[data-more]',card)?.addEventListener('click',()=>moreLike(shape));
       grid.appendChild(card);
