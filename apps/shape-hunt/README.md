@@ -26,32 +26,33 @@ http://localhost:5173
 
 No build step is required.
 
-## Geometry generation — v2 grammar model
+## Geometry generation — v3 research generator
 
-The current generator no longer uses one universal profile with the same points shuffled around.
+The current generator no longer only adds evidence tags after the fact. **Research now changes the generated geometry itself.**
 
-It uses **distinct cultural-form grammars**, each modernized and softened for pressed steel/enamel:
+The v3 generator uses:
 
-- **Slavic Modern** — grounded heirloom warmth, ritual table presence, no folk literalism.
-- **Viking / Nordic Modern** — low gravity, honest mass, northern restraint.
-- **Japan Modern** — quiet low bowl-cup, precise foot, controlled rim.
-- **Classic Modern** — balanced table cup, familiar but not generic.
-- **French Modern** — restrained salon tulip, lifted rim, elegant tension.
-- **Italian Modern** — cafe warmth, cappuccino softness, generous but controlled rim.
+- continuous radius fields instead of a small repeated set of rearranged control points;
+- smoothing passes before the profile is shown;
+- category-specific grammars for Slavic, Viking/Nordic, Japan, Classic, French and Italian directions;
+- pre-selection from an oversized pool, keeping the strongest evidence-weighted candidates;
+- softer waists, lips, feet and shoulders for pressed steel and enamel;
+- family-aware adaptation for 120 / 240 / 330 before candidates are promoted.
 
-Each selected category can generate **500 silhouettes**. Choosing “All modern categories” generates the same count per category.
+Each selected category can generate **500 research-weighted silhouettes**. Choosing “All evidence grammars” generates the same count per grammar.
 
-The engine also adds pressed-steel guardrails:
+The generator uses the evidence layer as a prior, not only as a label:
 
-- softer spline transitions;
-- fewer sharp waist/lip/foot breaks;
-- implied larger radii for drawing steel;
-- press-safe scoring;
-- angularity warnings for enamel risk.
+- smooth curvature preference;
+- MAYA balance: recognizable cup + one controlled gesture;
+- proportion bands for 120 / 240 / 330;
+- family coherence;
+- pressed-steel / enamel edge safety;
+- handle energy that can translate to two child handles and one adult handle.
 
 ## Evidence scoring
 
-The app now includes a research-backed evidence layer. It does **not** decide the final cup. It ranks candidates using stronger priors from research and manufacturing constraints:
+The app includes a research-backed evidence layer. It does **not** decide the final cup. It ranks candidates using stronger priors from research and manufacturing constraints:
 
 - **Smooth curvature** — curved / rounded contours generally outperform angular contours.
 - **MAYA balance** — recognizable as a cup/filiżanka, but with one controlled signature gesture.
