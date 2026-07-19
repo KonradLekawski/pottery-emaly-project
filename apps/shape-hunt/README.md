@@ -49,6 +49,34 @@ The engine also adds pressed-steel guardrails:
 - press-safe scoring;
 - angularity warnings for enamel risk.
 
+## Evidence scoring
+
+The app now includes a research-backed evidence layer. It does **not** decide the final cup. It ranks candidates using stronger priors from research and manufacturing constraints:
+
+- **Smooth curvature** — curved / rounded contours generally outperform angular contours.
+- **MAYA balance** — recognizable as a cup/filiżanka, but with one controlled signature gesture.
+- **Ratio band fit** — uses proportion bands, not a golden-ratio dogma.
+- **Family coherence** — 120 / 240 / 330 stay related without becoming clones.
+- **Handle ergonomics proxy** — checks whether handle energy is plausible across child/adult sizes.
+- **Enamel / pressed-steel risk** — penalizes sharp feet, hard waists and knife-like rims.
+
+New filters:
+
+```text
+Evidence-backed only
+High curvature preference
+High MAYA
+Strong family coherence
+```
+
+New view:
+
+```text
+Evidence
+```
+
+The Evidence view ranks candidates by `verifiedEvidenceScore` and shows the main research-backed signals.
+
 ## Current MVP
 
 Shape Hunt supports:
@@ -57,14 +85,15 @@ Shape Hunt supports:
 - modernized category grammars: Slavic, Viking/Nordic, Japan, Classic, French, Italian;
 - Gallery view with fast Good / Bad / Save / More Like This actions;
 - immediate **3-model preview** on every card: 120 / 240 / 330, with handles included;
-- automatic dimensional filters: All, Table dimension fit, Pressed steel safe, Road / cup-holder potential;
+- automatic dimensional filters: All, Table dimension fit, Pressed steel safe, Road / cup-holder potential, Evidence-backed, High curvature, High MAYA, Strong family coherence;
 - **Road Fit** view for testing whether saved DNA can translate into cup-holder-compatible travel bodies;
 - outsourced closure-system placeholder for travel models;
+- **Evidence** view for research-backed candidate ranking;
 - Sort modes: recommended, newest, soul score, table presence, strong foot, lower silhouettes, saved first;
 - archetype/category filtering;
 - hiding rejected shapes from the current batch;
 - **Brutal silhouette mode** for evaluating only the black contour;
-- Focus dialog with large silhouette, designer read, fit system and semantic tags;
+- Focus dialog with large silhouette, designer read, fit system, evidence scoring and semantic tags;
 - Shortlist view;
 - A/B Tournament view;
 - **Family Matrix**: 3 variants × 3 primary sizes, with handles included;
@@ -105,6 +134,7 @@ Modes:
 - **Table dimension fit** — only shapes whose 120 / 240 / 330 translations stay in the intended Table Line ranges.
 - **Pressed steel safe** — only softer, lower-angularity shapes likely to be safer for drawn steel and enamel.
 - **Road / cup-holder potential** — shapes whose DNA can plausibly translate to a travel body.
+- **Evidence-backed only** — shapes that pass the research-backed scoring layer.
 
 Road line rules are intentionally separate from Table Line. A travel version should use a more vertical body, a narrow cup-holder base and a closure interface. Closure/lid design is treated as an outsourced module candidate, not solved inside Shape Hunt.
 
@@ -131,6 +161,7 @@ The design funnel is:
 
 ```text
 Shape Hunt
+  → evidence-weighted silhouette discovery
   → shortlist 20–40 living silhouettes
   → dimensional / production-safe screening
   → A/B tournament
@@ -145,8 +176,9 @@ Shape Hunt
 
 Feedback is stored in browser `localStorage` and can be exported as JSON. The export includes:
 
-- generated shapes,
-- Good / Bad / Save decisions,
-- semantic tags,
-- decision history,
+- generated shapes;
+- research/evidence scores;
+- Good / Bad / Save decisions;
+- semantic tags;
+- decision history;
 - simple preference insight comparing saved/good vs rejected candidates.
