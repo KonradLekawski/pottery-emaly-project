@@ -25,4 +25,6 @@ jobs:
         run: |
           test -f apps/shape-hunt/index.html
           test -f apps/shape-hunt/styles.css
+          test -f apps/shape-hunt/extensions.css
           test -f apps/shape-hunt/app.js
+          test -f apps/shape-hunt/app-extensions.js
