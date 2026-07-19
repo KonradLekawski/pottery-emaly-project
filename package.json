@@ -4,7 +4,7 @@
   "private": true,
   "description": "Premium family enamelware platform — silhouette-first Table Line discovery tools.",
   "scripts": {
-    "test": "node --check apps/shape-hunt/app.js && node --check apps/shape-hunt/app-extensions.js && node --check apps/shape-hunt/app-cultural-engine.js && node --check apps/shape-hunt/app-fit-system.js && node --check apps/shape-hunt/app-evidence-scoring.js && node --check apps/shape-hunt/app-research-generator.js && node --check apps/shape-hunt/app-interaction-guard.js && node --check apps/shape-hunt/app-map-lab.js && node --check apps/shape-hunt/app-map-interaction.js",
+    "test": "node --check apps/shape-hunt/app.js && node --check apps/shape-hunt/app-extensions.js && node --check apps/shape-hunt/app-cultural-engine.js && node --check apps/shape-hunt/app-fit-system.js && node --check apps/shape-hunt/app-evidence-scoring.js && node --check apps/shape-hunt/app-research-generator.js && node --check apps/shape-hunt/app-interaction-guard.js && node --check apps/shape-hunt/app-map-lab.js && node --check apps/shape-hunt/app-map-interaction.js && node --check apps/shape-hunt/app-stability-guard.js",
     "serve:shape-hunt": "python3 -m http.server 5173 --directory apps/shape-hunt"
   },
   "engines": {
