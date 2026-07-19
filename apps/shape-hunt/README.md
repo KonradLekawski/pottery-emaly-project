@@ -6,7 +6,13 @@ The app exists for one job: **browse hundreds of cup silhouettes quickly and ide
 
 ## Run locally
 
-From this directory:
+From the repository root:
+
+```bash
+npm run serve:shape-hunt
+```
+
+Or from this directory:
 
 ```bash
 python3 -m http.server 5173
@@ -30,10 +36,15 @@ Shape Hunt now supports:
 - Sort modes: recommended, newest, soul score, table presence, strong foot, lower silhouettes, saved first;
 - archetype filtering;
 - hiding rejected shapes from the current batch;
+- **Brutal silhouette mode** for evaluating only the black contour;
 - Focus dialog with large silhouette, designer read and semantic tags;
 - Shortlist view;
 - A/B Tournament view;
 - Family Check translating saved 330 ml DNA into 120 / 240 / 330 / 440 ml;
+- **Shape Map** for seeing where Good / Bad / Saved decisions cluster;
+- **Taste Signal** panel comparing selected vs rejected feature tendencies;
+- **Review Board** for calmer finalist review;
+- review board export to HTML;
 - localStorage persistence;
 - feedback export to JSON.
 
@@ -77,7 +88,3 @@ Feedback is stored in browser `localStorage` and can be exported as JSON. The ex
 - semantic tags,
 - decision history,
 - simple preference insight comparing saved/good vs rejected candidates.
-
-## What this is not
-
-Shape Hunt is not final manufacturable CAD. It is the first design tool in the process: a fast visual funnel for discovering the brand silhouette before engineering the final form.
