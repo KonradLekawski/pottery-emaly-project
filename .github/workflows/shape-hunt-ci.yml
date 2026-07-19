@@ -1,0 +1,28 @@
+name: Shape Hunt CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check Shape Hunt JavaScript syntax
+        run: npm test
+
+      - name: Verify app entry points
+        run: |
+          test -f apps/shape-hunt/index.html
+          test -f apps/shape-hunt/styles.css
+          test -f apps/shape-hunt/app.js
