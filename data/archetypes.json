@@ -1,0 +1,38 @@
+[
+  {
+    "id": "quiet-heirloom",
+    "name": "Quiet Heirloom",
+    "description": "Soft, restrained, family-oriented, evolved from the preferred 04 direction.",
+    "bias": { "belly": 0.48, "waist": 0.30, "foot": 0.52, "lip": 0.38, "height": 0.52 }
+  },
+  {
+    "id": "soft-tulip",
+    "name": "Soft Tulip",
+    "description": "More cup/filiżanka opening, aspirational and premium, but not theatrical.",
+    "bias": { "belly": 0.42, "waist": 0.48, "foot": 0.42, "lip": 0.72, "height": 0.55 }
+  },
+  {
+    "id": "low-table-cup",
+    "name": "Low Table Cup",
+    "description": "Lower, broader, stable and table-oriented; strong for child sizes.",
+    "bias": { "belly": 0.56, "waist": 0.26, "foot": 0.50, "lip": 0.42, "height": 0.32 }
+  },
+  {
+    "id": "noble-belly",
+    "name": "Noble Belly",
+    "description": "Warmer, softer body with controlled fullness and family emotion.",
+    "bias": { "belly": 0.78, "waist": 0.36, "foot": 0.44, "lip": 0.44, "height": 0.48 }
+  },
+  {
+    "id": "footed-classic",
+    "name": "Footed Classic",
+    "description": "More table-classic due to a stronger foot, undercut and base shadow.",
+    "bias": { "belly": 0.42, "waist": 0.34, "foot": 0.82, "lip": 0.46, "height": 0.48 }
+  },
+  {
+    "id": "modern-heirloom",
+    "name": "Modern Heirloom",
+    "description": "Cleaner and more contemporary with one subtle signature gesture.",
+    "bias": { "belly": 0.34, "waist": 0.30, "foot": 0.46, "lip": 0.36, "height": 0.58 }
+  }
+]
