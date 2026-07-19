@@ -8,53 +8,252 @@ export const GRAMMARS = [
 ];
 
 export const FEATURES = [
-  ['verifiedEvidenceScore','Evidence score','Evidence'],['smoothCurvatureScore','Smooth curvature','Evidence'],['mayaScore','MAYA balance','Evidence'],['typicalityScore','Typicality','Evidence'],['noveltyScore','Novelty','Evidence'],
-  ['familyCoherenceScore','Family coherence','Family'],['handleErgonomicsScore','Handle ergonomics','Family'],['pressSafeScore','Pressed steel score','Production'],['angularRisk','Angular risk','Production'],['enamelEdgeScore','Enamel edge score','Production'],
-  ['tableScore','Table presence','Brand'],['soulScore','Soul score','Brand'],['campingRisk','Camping risk','Brand'],['height','Height','Dimensions'],['base','Base diameter','Dimensions'],['rim','Rim diameter','Dimensions'],['hToRim','H / rim','Dimensions'],['stability','Base / height','Dimensions'],['rimBaseRatio','Rim / base','Dimensions'],['massProxy','Mass proxy','Dimensions'],
-  ['foot','Foot signature','Gesture'],['lip','Rim gesture','Gesture'],['waist','Waist tension','Gesture'],['belly','Belly warmth','Gesture'],['shoulder','Shoulder','Gesture'],['quiet','Quietness','Gesture'],['handle','Handle energy','Gesture'],['roadPotentialScore','Road potential','Road'],['tableFitScore','Table dimension fit','Fit']
-].map(([key,label,group])=>({key,label,group}));
+  ['verifiedEvidenceScore','Evidence score','Evidence'], ['smoothCurvatureScore','Smooth curvature','Evidence'], ['mayaScore','MAYA balance','Evidence'], ['typicalityScore','Typicality','Evidence'], ['noveltyScore','Novelty','Evidence'],
+  ['familyCoherenceScore','Family coherence','Family'], ['handleErgonomicsScore','Handle ergonomics','Family'], ['pressSafeScore','Pressed steel score','Production'], ['angularRisk','Angular risk','Production'], ['enamelEdgeScore','Enamel edge score','Production'],
+  ['tableScore','Table presence','Brand'], ['soulScore','Soul score','Brand'], ['campingRisk','Camping risk','Brand'], ['height','Height','Dimensions'], ['base','Base diameter','Dimensions'], ['rim','Rim diameter','Dimensions'], ['hToRim','H / rim','Dimensions'], ['stability','Base / height','Dimensions'], ['rimBaseRatio','Rim / base','Dimensions'], ['massProxy','Mass proxy','Dimensions'],
+  ['foot','Foot signature','Gesture'], ['lip','Rim gesture','Gesture'], ['waist','Waist tension','Gesture'], ['belly','Belly warmth','Gesture'], ['shoulder','Shoulder','Gesture'], ['quiet','Quietness','Gesture'], ['handle','Handle energy','Gesture'], ['roadPotentialScore','Road potential','Road'], ['tableFitScore','Table dimension fit','Fit']
+].map(([key,label,group]) => ({ key, label, group }));
 
 export const MAP_PRESETS = {
-  taste:{label:'Taste field',x:'tableScore',y:'soulScore',size:'verifiedEvidenceScore',color:'decision'},
-  evidence:{label:'Research evidence',x:'smoothCurvatureScore',y:'mayaScore',size:'familyCoherenceScore',color:'verifiedEvidenceScore'},
-  production:{label:'Production safety',x:'pressSafeScore',y:'angularRisk',size:'verifiedEvidenceScore',color:'angularRisk'},
-  family:{label:'Family + handles',x:'familyCoherenceScore',y:'handleErgonomicsScore',size:'tableFitScore',color:'decision'},
-  proportions:{label:'Proportions',x:'hToRim',y:'stability',size:'rimBaseRatio',color:'tableScore'},
-  gesture:{label:'Signature gesture',x:'foot',y:'lip',size:'waist',color:'soulScore'},
-  road:{label:'Road transfer',x:'roadPotentialScore',y:'stability',size:'pressSafeScore',color:'decision'}
+  taste: { label: 'Taste field', x: 'tableScore', y: 'soulScore', size: 'verifiedEvidenceScore', color: 'decision' },
+  evidence: { label: 'Research evidence', x: 'smoothCurvatureScore', y: 'mayaScore', size: 'familyCoherenceScore', color: 'verifiedEvidenceScore' },
+  production: { label: 'Production safety', x: 'pressSafeScore', y: 'angularRisk', size: 'verifiedEvidenceScore', color: 'angularRisk' },
+  family: { label: 'Family + handles', x: 'familyCoherenceScore', y: 'handleErgonomicsScore', size: 'tableFitScore', color: 'decision' },
+  proportions: { label: 'Proportions', x: 'hToRim', y: 'stability', size: 'rimBaseRatio', color: 'tableScore' },
+  gesture: { label: 'Signature gesture', x: 'foot', y: 'lip', size: 'waist', color: 'soulScore' },
+  road: { label: 'Road transfer', x: 'roadPotentialScore', y: 'stability', size: 'pressSafeScore', color: 'decision' }
 };
 
-export const SIZE_LIMITS = {120:{height:[46,58],base:[58,68],rim:[74,84]},240:{height:[60,74],base:[66,78],rim:[86,100]},330:{height:[76,90],base:[70,82],rim:[94,108]}};
-export const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,Number.isFinite(Number(v))?Number(v):0));
-export const round=(v,p=2)=>Math.round(Number(v||0)*10**p)/10**p;
-export function makeRng(seed=1){let x=seed>>>0;return()=>{x+=0x6D2B79F5;let t=x;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296};}
-const jitter=(r,a)=>(r()-.5)*a;
-const gaussian=(t,c,w)=>Math.exp(-Math.pow((t-c)/Math.max(.001,w),2));
-const smooth=t=>t*t*(3-2*t);
-const ideal=(v,t,s)=>clamp(1-Math.abs(v-t)/Math.max(.001,s));
-const band=(v,[lo,hi])=>ideal(v,(lo+hi)/2,(hi-lo)/2);
+export const SIZE_LIMITS = {
+  120: { height: [46, 58], base: [58, 68], rim: [74, 84] },
+  240: { height: [60, 74], base: [66, 78], rim: [86, 100] },
+  330: { height: [76, 90], base: [70, 82], rim: [94, 108] }
+};
 
-export function featureValue(shape,key){if(key==='rimBaseRatio')return shape.rim/Math.max(1,shape.base);if(key==='roadPotentialScore')return roadPotential(shape).score;if(key==='tableFitScore')return tableFit(shape).score;return Number(shape[key]??0);}
+export const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : 0));
+export const round = (v, p = 2) => Math.round(Number(v || 0) * 10 ** p) / 10 ** p;
+export function makeRng(seed = 1) {
+  let x = seed >>> 0;
+  return () => {
+    x += 0x6D2B79F5;
+    let t = x;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
 
-function normalize(grammar,r,over={}){const b=grammar.base;const f={height:clamp(over.height??b.height+jitter(r,7),58,98),base:clamp(over.base??b.base+jitter(r,6),56,92),rim:clamp(over.rim??b.rim+jitter(r,7),82,118),belly:clamp(over.belly??b.belly+jitter(r,.12),.06,.86),waist:clamp(over.waist??b.waist+jitter(r,.10),0,.64),foot:clamp(over.foot??b.foot+jitter(r,.10),.12,.90),lip:clamp(over.lip??b.lip+jitter(r,.11),.05,.78),shoulder:clamp(over.shoulder??b.shoulder+jitter(r,.12),.04,.82),quiet:clamp(over.quiet??b.quiet+jitter(r,.10),.34,.98),handle:clamp(over.handle??b.handle+jitter(r,.14),.18,.86),steelSoftness:clamp(over.steelSoftness??.82+b.quiet*.10+jitter(r,.05),.68,.98)};if(f.waist>.52&&f.lip>.60)f.waist*=.82;if(f.lip>.68)f.lip=.68+(f.lip-.68)*.45;if(f.belly>.76&&f.rim>112)f.belly*=.92;if(f.height/Math.max(1,f.rim)>1)f.height*=.96;f.quiet=clamp(f.quiet+Math.max(0,f.waist-.52)*.10+Math.max(0,f.lip-.62)*.10);return f;}
+const jitter = (r, a) => (r() - .5) * a;
+const gaussian = (t, c, w) => Math.exp(-Math.pow((t - c) / Math.max(.001, w), 2));
+const smooth = t => t * t * (3 - 2 * t);
+const ideal = (v, t, s) => clamp(1 - Math.abs(v - t) / Math.max(.001, s));
+const band = (v, [lo, hi]) => ideal(v, (lo + hi) / 2, (hi - lo) / 2);
 
-export function familyAdapt(shape,size){const k={120:{height:.62,base:.83,rim:.77,belly:.68,waist:.42,foot:1.15,lip:.70,shoulder:.64,handle:1.14,quiet:.06},240:{height:.82,base:.93,rim:.91,belly:.82,waist:.66,foot:1.07,lip:.84,shoulder:.82,handle:1.06,quiet:.03},330:{height:1,base:1,rim:1,belly:1,waist:1,foot:1,lip:1,shoulder:1,handle:1,quiet:0}}[size]??{height:1,base:1,rim:1,belly:1,waist:1,foot:1,lip:1,shoulder:1,handle:1,quiet:0};return enrichShape({...shape,id:`${shape.id}_${size}`,height:shape.height*k.height,base:shape.base*k.base,rim:shape.rim*k.rim,belly:clamp(shape.belly*k.belly),waist:clamp(shape.waist*k.waist),foot:clamp(shape.foot*k.foot),lip:clamp(shape.lip*k.lip),shoulder:clamp(shape.shoulder*k.shoulder),handle:clamp((shape.handle??.5)*k.handle),quiet:clamp((shape.quiet??.6)+k.quiet),steelSoftness:clamp((shape.steelSoftness??.84)+(size<=240?.07:0),.68,.98)},false);}
+export function featureValue(shape, key) {
+  if (key === 'rimBaseRatio') return shape.rim / Math.max(1, shape.base);
+  if (key === 'roadPotentialScore') return roadPotential(shape).score;
+  if (key === 'tableFitScore') return tableFit(shape).score;
+  return Number(shape[key] ?? 0);
+}
 
-export function profilePoints(shape,size=330,samples=34){const s=size===330?shape:familyAdapt(shape,size),h=s.height,baseR=s.base/2,rimR=s.rim/2,pts=[];for(let i=0;i<samples;i++){const t=i/(samples-1),flow=Math.pow(t,1.18-s.quiet*.22);let r=baseR+(rimR-baseR)*(.20*t+.80*smooth(flow));r+=(1.2+8.2*s.belly)*gaussian(t,.40,.24+.08*s.quiet)*(1-.18*t);r+=(.6+2.8*s.foot)*gaussian(t,.155,.070+.030*s.steelSoftness);r+=(.2+4.8*s.shoulder)*gaussian(t,.74,.17+.05*s.steelSoftness);r+=(.4+4.6*s.lip)*gaussian(t,.955,.08+.04*s.steelSoftness);r-=(1+3.6*s.foot)*gaussian(t,.075,.055+.025*s.steelSoftness);r-=(.2+3.8*s.waist)*gaussian(t,.51,.18+.08*s.steelSoftness);pts.push({y:t*h,r:Math.max(8,r)});}for(let p=0;p<3;p++)for(let i=1;i<pts.length-1;i++)pts[i].r=pts[i].r*.52+(pts[i-1].r+pts[i+1].r)*.24;return pts;}
+function normalize(grammar, r, over = {}) {
+  const b = grammar.base;
+  const f = {
+    height: clamp(over.height ?? b.height + jitter(r, 7), 58, 98),
+    base: clamp(over.base ?? b.base + jitter(r, 6), 56, 92),
+    rim: clamp(over.rim ?? b.rim + jitter(r, 7), 82, 118),
+    belly: clamp(over.belly ?? b.belly + jitter(r, .12), .06, .86),
+    waist: clamp(over.waist ?? b.waist + jitter(r, .10), 0, .64),
+    foot: clamp(over.foot ?? b.foot + jitter(r, .10), .12, .90),
+    lip: clamp(over.lip ?? b.lip + jitter(r, .11), .05, .78),
+    shoulder: clamp(over.shoulder ?? b.shoulder + jitter(r, .12), .04, .82),
+    quiet: clamp(over.quiet ?? b.quiet + jitter(r, .10), .34, .98),
+    handle: clamp(over.handle ?? b.handle + jitter(r, .14), .18, .86),
+    steelSoftness: clamp(over.steelSoftness ?? .82 + b.quiet * .10 + jitter(r, .05), .68, .98)
+  };
+  if (f.waist > .52 && f.lip > .60) f.waist *= .82;
+  if (f.lip > .68) f.lip = .68 + (f.lip - .68) * .45;
+  if (f.belly > .76 && f.rim > 112) f.belly *= .92;
+  if (f.height / Math.max(1, f.rim) > 1) f.height *= .96;
+  f.quiet = clamp(f.quiet + Math.max(0, f.waist - .52) * .10 + Math.max(0, f.lip - .62) * .10);
+  return f;
+}
 
-function angularRisk(shape){const pts=profilePoints(shape,330);let accel=0,kink=0;for(let i=2;i<pts.length;i++){const a=Math.abs((pts[i].r-pts[i-1].r)-(pts[i-1].r-pts[i-2].r));accel+=a;if(a>.58)kink++;}return clamp(accel/(pts.length*.22)+kink*.018+Math.max(0,shape.waist-.56)*.18+Math.max(0,shape.lip-.68)*.14);}
-function campingRisk(shape,hToRim){return clamp(Math.max(0,.30-shape.foot)/.30*.28+Math.max(0,hToRim-1.02)/.32*.24+Math.max(0,.18-shape.waist)/.18*Math.max(0,.28-shape.belly)/.28*.20+Math.max(0,.18-Math.abs((shape.rim-shape.base)/Math.max(1,shape.rim)))/.18*.28);}
-export function tableFit(shape){const sizes=[120,240,330].map(size=>{const s=size===330?shape:familyAdapt(shape,size),lim=SIZE_LIMITS[size],score=(band(s.height,lim.height)+band(s.base,lim.base)+band(s.rim,lim.rim))/3,pass=s.height>=lim.height[0]&&s.height<=lim.height[1]&&s.base>=lim.base[0]&&s.base<=lim.base[1]&&s.rim>=lim.rim[0]&&s.rim<=lim.rim[1];return{size,score,pass,shape:s}});return{sizes,score:round(sizes.reduce((a,b)=>a+b.score,0)/sizes.length,3),pass:sizes.every(s=>s.pass)}}
-export function roadPotential(shape){const base=shape.base*.76,score=base<=71?1:base<=77?.78:base<=83?.42:.10;return{score,base,label:base<=71?'fits most':base<=77?'fits many':base<=83?'large holders only':'fails'}}
-function familyCoherence(shape){const bands={120:[.60,.78],240:[.68,.84],330:[.78,.94]},scores=[120,240,330].map(size=>{const s=size===330?shape:familyAdapt(shape,size);return band(s.height/Math.max(1,s.rim),bands[size])}),bases=[familyAdapt(shape,120).base,familyAdapt(shape,240).base,shape.base],sane=bases.every((b,i)=>i===0||b>=bases[i-1]-1);return clamp(scores.reduce((a,b)=>a+b,0)/3*(sane?1:.82));}
-function signature(shape){const gs=[shape.foot,shape.lip,shape.waist,shape.belly,shape.handle??.5].map(v=>clamp(Math.abs(v-.50)/.45)).sort((a,b)=>b-a);return clamp(gs[0]*.75+(1-gs[1])*.25)}
-export function enrichShape(shape,recompute=true){const hToRim=shape.height/Math.max(1,shape.rim),stability=shape.base/Math.max(1,shape.height),rimBaseRatio=shape.rim/Math.max(1,shape.base),angular=angularRisk(shape),smoothScore=clamp(1-angular*.86),camp=campingRisk(shape,hToRim),table=clamp((1-Math.abs(hToRim-.82)/.35)*.30+Math.min(1,stability/.90)*.28+shape.foot*.22+shape.quiet*.20),typ=clamp((1-Math.abs(hToRim-.84)/.26)*.35+(1-Math.abs(rimBaseRatio-1.33)/.34)*.25+Math.min(1,stability/.86)*.20+(1-camp)*.20),nov=clamp(signature(shape)*.72+(1-Math.max(0,shape.lip-.76)*1.1-Math.max(0,shape.waist-.68))* .28),maya=clamp(Math.min(typ,nov)*.64+((typ+nov)/2)*.36),fam=recompute?familyCoherence(shape):.7,handle=clamp(1-Math.abs((shape.handle??.5)-.58)/.46),enamel=clamp(smoothScore*.66+(1-Math.max(0,shape.lip-.72))*.12+(1-Math.max(0,shape.waist-.62))*.12+(shape.steelSoftness??.84)*.10),soul=clamp(shape.foot*.20+shape.lip*.17+shape.belly*.22+(1-Math.abs(shape.quiet-.60))*.19+shape.waist*.22),evidence=clamp(smoothScore*.27+maya*.22+fam*.18+handle*.08+enamel*.25),road=roadPotential(shape).score,fit=recompute?tableFit(shape).score:.7;return Object.assign(shape,{generatorVersion:'shape-hunt-core-v1',hToRim:round(hToRim,2),stability:round(stability,2),rimBaseRatio:round(rimBaseRatio,2),angularRisk:round(angular,2),smoothCurvatureScore:round(smoothScore,2),typicalityScore:round(typ,2),noveltyScore:round(nov,2),mayaScore:round(maya,2),familyCoherenceScore:round(fam,2),handleErgonomicsScore:round(handle,2),enamelEdgeScore:round(enamel,2),pressSafeScore:round(enamel,2),verifiedEvidenceScore:round(evidence,3),tableScore:round(table,2),soulScore:round(soul,2),campingRisk:round(camp,2),roadPotentialScore:round(road,2),tableFitScore:round(fit,2),massProxy:Math.round(shape.height*(shape.base+shape.rim)*.0098+shape.foot*9+shape.belly*8+(shape.handle??.5)*5),recommendation:round(evidence*.52+table*.20+soul*.18+(1-camp)*.10,3)});}
-function makeShape(id,grammar,r,over={}){return enrichShape({...normalize(grammar,r,over),id,archetypeId:grammar.id,archetypeName:grammar.name,archetypeDescription:grammar.desc});}
-export function generateBatch({perGrammar=500,grammarId='all',seed=1000}={}){const r=makeRng(seed),grammars=grammarId==='all'?GRAMMARS:GRAMMARS.filter(g=>g.id===grammarId),out=[];for(const grammar of grammars){out.push(enrichShape({...grammar.base,id:`${grammar.short}_ANCHOR`,archetypeId:grammar.id,archetypeName:grammar.name,archetypeDescription:grammar.desc,generatorVersion:'shape-hunt-core-v1'}));const pool=[];for(let i=0;i<perGrammar*3;i++)pool.push(makeShape(`${grammar.short}_${String(i+1).padStart(4,'0')}`,grammar,r));pool.sort((a,b)=>b.verifiedEvidenceScore-a.verifiedEvidenceScore||b.recommendation-a.recommendation);out.push(...pool.slice(0,perGrammar));}return out;}
-export function moreLike(shape,{count=260,seed=Date.now()}={}){const grammar=GRAMMARS.find(g=>g.id===shape.archetypeId)??GRAMMARS[3],r=makeRng(seed),pool=[];for(let i=0;i<count*3;i++){const t=i<count*1.8?.10:.20;pool.push(makeShape(`MR_${shape.id}_${String(i+1).padStart(3,'0')}`,grammar,r,{height:clamp(shape.height+jitter(r,18*t),58,98),base:clamp(shape.base+jitter(r,16*t),56,92),rim:clamp(shape.rim+jitter(r,18*t),82,118),belly:clamp(shape.belly+jitter(r,.32*t),.06,.86),waist:clamp(shape.waist+jitter(r,.28*t),0,.64),foot:clamp(shape.foot+jitter(r,.30*t),.12,.90),lip:clamp(shape.lip+jitter(r,.30*t),.05,.78),shoulder:clamp(shape.shoulder+jitter(r,.32*t),.04,.82),quiet:clamp(shape.quiet+jitter(r,.22*t),.34,.98),handle:clamp((shape.handle??.5)+jitter(r,.26*t),.18,.86),steelSoftness:clamp((shape.steelSoftness??.84)+jitter(r,.12*t),.68,.98)}));}return pool.sort((a,b)=>b.verifiedEvidenceScore-a.verifiedEvidenceScore).slice(0,count);}
-function renderConfig(shape,size=330,opt={}){const large=!!opt.large,width=opt.width??(large?420:260),height=opt.height??(large?460:300),points=profilePoints(shape,size),h=Math.max(...points.map(p=>p.y)),maxR=Math.max(...points.map(p=>p.r)),s=size===330?shape:familyAdapt(shape,size),handleExtra=opt.bodyOnly?0:(size<=240?34:42)+(s.handle??.5)*14,top=large?28:20,bottom=large?70:50,k=Math.min((width-40)/(2*(maxR+handleExtra)),(height-top-bottom)/Math.max(1,h))*(opt.scale??1),cx=width/2,tableY=Math.min(height-28,top+h*k+16);return{width,height,points,k,cx,top,tableY,s};}
-function pathFrom(points,{k,cx,top}){const xy=p=>({x:cx+p.r*k,y:top+(Math.max(...points.map(q=>q.y))-p.y)*k}),right=points.map(xy),left=[...points].reverse().map(p=>({x:cx-p.r*k,y:top+(Math.max(...points.map(q=>q.y))-p.y)*k}));function catmull(list){const out=[`M ${round(list[0].x,1)},${round(list[0].y,1)}`];for(let i=0;i<list.length-1;i++){const p0=list[Math.max(0,i-1)],p1=list[i],p2=list[i+1],p3=list[Math.min(list.length-1,i+2)],t=.82,c1={x:p1.x+(p2.x-p0.x)/6*t,y:p1.y+(p2.y-p0.y)/6*t},c2={x:p2.x-(p3.x-p1.x)/6*t,y:p2.y-(p3.y-p1.y)/6*t};out.push(`C ${round(c1.x,1)},${round(c1.y,1)} ${round(c2.x,1)},${round(c2.y,1)} ${round(p2.x,1)},${round(p2.y,1)}`)}return out.join(' ')}return`${catmull(right)} ${catmull(left).replace(/^M /,'L ')} Z`}
-function handlePath(shape,opt={},side=1){const size=opt.familySize??330,cfg=renderConfig(shape,size,opt),s=cfg.s,pts=cfg.points,k=cfg.k,cx=cfg.cx,top=cfg.top,h=Math.max(...pts.map(p=>p.y)),maxR=Math.max(...pts.filter(p=>p.y>h*.28&&p.y<h*.76).map(p=>p.r)),yTop=top+(h-h*(size<=240?.66:.69))*k,yBot=top+(h-h*(size<=240?.32:.35))*k,yMid=(yTop+yBot)/2,inner=cx+side*(maxR*k+3),outer=(18+(s.handle??.5)*18+(size<=240?8:3))*k/2.15,xOut=inner+side*outer,hole=inner+side*Math.max(9,outer*.48),soft=8;return`M ${round(inner,1)},${round(yTop,1)} C ${round(xOut,1)},${round(yTop-soft,1)} ${round(xOut,1)},${round(yBot+soft,1)} ${round(inner,1)},${round(yBot,1)} C ${round(inner+side*6,1)},${round(yMid+6,1)} ${round(inner+side*6,1)},${round(yMid-6,1)} ${round(inner,1)},${round(yTop,1)} Z M ${round(inner+side*6,1)},${round(yTop+11,1)} C ${round(hole,1)},${round(yTop+5,1)} ${round(hole,1)},${round(yBot-5,1)} ${round(inner+side*6,1)},${round(yBot-11,1)} C ${round(inner+side*12,1)},${round(yMid+1,1)} ${round(inner+side*12,1)},${round(yMid-1,1)} ${round(inner+side*6,1)},${round(yTop+11,1)} Z`}
-function handles(shape,opt={}){const size=opt.familySize??330,sides=size<=240?[-1,1]:[1];return sides.map(side=>`<path d="${handlePath(shape,opt,side)}" fill="#171514" fill-rule="evenodd" class="handle-path"/>`).join('')}
-export function svg(shape,opt={}){const size=opt.familySize??330,cfg=renderConfig(shape,size,opt),bodyOnly=!!opt.bodyOnly,cap=opt.large?`<text x="${cfg.width/2}" y="${cfg.height-12}" text-anchor="middle" class="svg-caption">H ${Math.round(cfg.s.height)} · base ${Math.round(cfg.s.base)} · rim ${Math.round(cfg.s.rim)} · Ev ${Math.round((cfg.s.verifiedEvidenceScore??.7)*100)}</text>`:'';return`<svg viewBox="0 0 ${cfg.width} ${cfg.height}" role="img" aria-label="${shape.id} silhouette"><line x1="${cfg.width*.16}" x2="${cfg.width*.84}" y1="${cfg.tableY}" y2="${cfg.tableY}" class="table-line"/>${bodyOnly?'':handles(shape,{...opt,familySize:size})}<path d="${pathFrom(cfg.points,cfg)}" fill="#171514" class="body-path"/>${cap}</svg>`}
-export function designerRead(shape){const notes=[shape.archetypeName??'Research geometry'];if(shape.smoothCurvatureScore>.78)notes.push('smooth curvature prior');if(shape.mayaScore>.70)notes.push('MAYA balanced');if(shape.pressSafeScore>.72)notes.push('pressed-steel soft');if(shape.familyCoherenceScore>.70)notes.push('family coherent');if(shape.campingRisk>.50)notes.push('camping warning');if(shape.angularRisk>.42)notes.push('angularity warning');return`${notes.join(' · ')}.`}
+export function familyAdapt(shape, size) {
+  const k = {
+    120: { height: .62, base: .83, rim: .77, belly: .68, waist: .42, foot: 1.15, lip: .70, shoulder: .64, handle: 1.14, quiet: .06 },
+    240: { height: .82, base: .93, rim: .91, belly: .82, waist: .66, foot: 1.07, lip: .84, shoulder: .82, handle: 1.06, quiet: .03 },
+    330: { height: 1, base: 1, rim: 1, belly: 1, waist: 1, foot: 1, lip: 1, shoulder: 1, handle: 1, quiet: 0 }
+  }[size];
+  return enrichShape({
+    ...shape,
+    id: `${shape.id}_${size}`,
+    height: shape.height * k.height,
+    base: shape.base * k.base,
+    rim: shape.rim * k.rim,
+    belly: clamp(shape.belly * k.belly),
+    waist: clamp(shape.waist * k.waist),
+    foot: clamp(shape.foot * k.foot),
+    lip: clamp(shape.lip * k.lip),
+    shoulder: clamp(shape.shoulder * k.shoulder),
+    handle: clamp((shape.handle ?? .5) * k.handle),
+    quiet: clamp((shape.quiet ?? .6) + k.quiet),
+    steelSoftness: clamp((shape.steelSoftness ?? .84) + (size <= 240 ? .07 : 0), .68, .98)
+  }, false);
+}
+
+export function profilePoints(shape, size = 330, samples = 34) {
+  const s = size === 330 ? shape : familyAdapt(shape, size);
+  const h = s.height, baseR = s.base / 2, rimR = s.rim / 2, pts = [];
+  for (let i = 0; i < samples; i++) {
+    const t = i / (samples - 1);
+    const flow = Math.pow(t, 1.18 - s.quiet * .22);
+    let r = baseR + (rimR - baseR) * (.20 * t + .80 * smooth(flow));
+    r += (1.2 + 8.2 * s.belly) * gaussian(t, .40, .24 + .08 * s.quiet) * (1 - .18 * t);
+    r += (.6 + 2.8 * s.foot) * gaussian(t, .155, .070 + .030 * s.steelSoftness);
+    r += (.2 + 4.8 * s.shoulder) * gaussian(t, .74, .17 + .05 * s.steelSoftness);
+    r += (.4 + 4.6 * s.lip) * gaussian(t, .955, .08 + .04 * s.steelSoftness);
+    r -= (1 + 3.6 * s.foot) * gaussian(t, .075, .055 + .025 * s.steelSoftness);
+    r -= (.2 + 3.8 * s.waist) * gaussian(t, .51, .18 + .08 * s.steelSoftness);
+    pts.push({ y: t * h, r: Math.max(8, r) });
+  }
+  for (let p = 0; p < 3; p++) {
+    for (let i = 1; i < pts.length - 1; i++) pts[i].r = pts[i].r * .52 + (pts[i - 1].r + pts[i + 1].r) * .24;
+  }
+  return pts;
+}
+
+function angularRisk(shape) {
+  const pts = profilePoints(shape, 330);
+  let accel = 0, kink = 0;
+  for (let i = 2; i < pts.length; i++) {
+    const a = Math.abs((pts[i].r - pts[i - 1].r) - (pts[i - 1].r - pts[i - 2].r));
+    accel += a;
+    if (a > .58) kink++;
+  }
+  return clamp(accel / (pts.length * .22) + kink * .018 + Math.max(0, shape.waist - .56) * .18 + Math.max(0, shape.lip - .68) * .14);
+}
+function campingRisk(shape, hToRim) {
+  return clamp(
+    Math.max(0, .30 - shape.foot) / .30 * .28 +
+    Math.max(0, hToRim - 1.02) / .32 * .24 +
+    Math.max(0, .18 - shape.waist) / .18 * Math.max(0, .28 - shape.belly) / .28 * .20 +
+    Math.max(0, .18 - Math.abs((shape.rim - shape.base) / Math.max(1, shape.rim))) / .18 * .28
+  );
+}
+export function tableFit(shape) {
+  const sizes = [120, 240, 330].map(size => {
+    const s = size === 330 ? shape : familyAdapt(shape, size), lim = SIZE_LIMITS[size];
+    const score = (band(s.height, lim.height) + band(s.base, lim.base) + band(s.rim, lim.rim)) / 3;
+    const pass = s.height >= lim.height[0] && s.height <= lim.height[1] && s.base >= lim.base[0] && s.base <= lim.base[1] && s.rim >= lim.rim[0] && s.rim <= lim.rim[1];
+    return { size, score, pass, shape: s };
+  });
+  return { sizes, score: round(sizes.reduce((a, b) => a + b.score, 0) / sizes.length, 3), pass: sizes.every(s => s.pass) };
+}
+export function roadPotential(shape) {
+  const base = shape.base * .76, score = base <= 71 ? 1 : base <= 77 ? .78 : base <= 83 ? .42 : .10;
+  return { score, base, label: base <= 71 ? 'fits most' : base <= 77 ? 'fits many' : base <= 83 ? 'large holders only' : 'fails' };
+}
+function familyCoherence(shape) {
+  const bands = { 120: [.60, .78], 240: [.68, .84], 330: [.78, .94] };
+  const scores = [120, 240, 330].map(size => {
+    const s = size === 330 ? shape : familyAdapt(shape, size);
+    return band(s.height / Math.max(1, s.rim), bands[size]);
+  });
+  const bases = [familyAdapt(shape, 120).base, familyAdapt(shape, 240).base, shape.base];
+  const sane = bases.every((b, i) => i === 0 || b >= bases[i - 1] - 1);
+  return clamp(scores.reduce((a, b) => a + b, 0) / 3 * (sane ? 1 : .82));
+}
+function signature(shape) {
+  const gs = [shape.foot, shape.lip, shape.waist, shape.belly, shape.handle ?? .5].map(v => clamp(Math.abs(v - .50) / .45)).sort((a, b) => b - a);
+  return clamp(gs[0] * .75 + (1 - gs[1]) * .25);
+}
+export function enrichShape(shape, recompute = true) {
+  const hToRim = shape.height / Math.max(1, shape.rim), stability = shape.base / Math.max(1, shape.height), rimBaseRatio = shape.rim / Math.max(1, shape.base);
+  const angular = angularRisk(shape), smoothScore = clamp(1 - angular * .86), camp = campingRisk(shape, hToRim);
+  const table = clamp((1 - Math.abs(hToRim - .82) / .35) * .30 + Math.min(1, stability / .90) * .28 + shape.foot * .22 + shape.quiet * .20);
+  const typ = clamp((1 - Math.abs(hToRim - .84) / .26) * .35 + (1 - Math.abs(rimBaseRatio - 1.33) / .34) * .25 + Math.min(1, stability / .86) * .20 + (1 - camp) * .20);
+  const nov = clamp(signature(shape) * .72 + (1 - Math.max(0, shape.lip - .76) * 1.1 - Math.max(0, shape.waist - .68)) * .28);
+  const maya = clamp(Math.min(typ, nov) * .64 + ((typ + nov) / 2) * .36), fam = recompute ? familyCoherence(shape) : .7;
+  const handle = clamp(1 - Math.abs((shape.handle ?? .5) - .58) / .46);
+  const enamel = clamp(smoothScore * .66 + (1 - Math.max(0, shape.lip - .72)) * .12 + (1 - Math.max(0, shape.waist - .62)) * .12 + (shape.steelSoftness ?? .84) * .10);
+  const soul = clamp(shape.foot * .20 + shape.lip * .17 + shape.belly * .22 + (1 - Math.abs(shape.quiet - .60)) * .19 + shape.waist * .22);
+  const evidence = clamp(smoothScore * .27 + maya * .22 + fam * .18 + handle * .08 + enamel * .25);
+  const road = roadPotential(shape).score, fit = recompute ? tableFit(shape).score : .7;
+  return Object.assign(shape, {
+    hToRim: round(hToRim, 2), stability: round(stability, 2), rimBaseRatio: round(rimBaseRatio, 2), angularRisk: round(angular, 2), smoothCurvatureScore: round(smoothScore, 2), typicalityScore: round(typ, 2), noveltyScore: round(nov, 2), mayaScore: round(maya, 2), familyCoherenceScore: round(fam, 2), handleErgonomicsScore: round(handle, 2), enamelEdgeScore: round(enamel, 2), pressSafeScore: round(enamel, 2), verifiedEvidenceScore: round(evidence, 3), tableScore: round(table, 2), soulScore: round(soul, 2), campingRisk: round(camp, 2), roadPotentialScore: round(road, 2), tableFitScore: round(fit, 2), massProxy: Math.round(shape.height * (shape.base + shape.rim) * .0098 + shape.foot * 9 + shape.belly * 8 + (shape.handle ?? .5) * 5), recommendation: round(evidence * .52 + table * .20 + soul * .18 + (1 - camp) * .10, 3), generatorVersion: 'shape-hunt-core-v1'
+  });
+}
+function makeShape(id, grammar, r, over = {}) {
+  return enrichShape({ ...normalize(grammar, r, over), id, archetypeId: grammar.id, archetypeName: grammar.name, archetypeDescription: grammar.desc, generatorVersion: 'shape-hunt-core-v1' });
+}
+export function generateBatch({ perGrammar = 500, grammarId = 'all', seed = 1000 } = {}) {
+  const r = makeRng(seed), grammars = grammarId === 'all' ? GRAMMARS : GRAMMARS.filter(g => g.id === grammarId), out = [];
+  for (const grammar of grammars) {
+    out.push(enrichShape({ ...grammar.base, id: `${grammar.short}_ANCHOR`, archetypeId: grammar.id, archetypeName: grammar.name, archetypeDescription: grammar.desc, generatorVersion: 'shape-hunt-core-v1' }));
+    const pool = [];
+    for (let i = 0; i < perGrammar * 3; i++) pool.push(makeShape(`${grammar.short}_${String(i + 1).padStart(4, '0')}`, grammar, r));
+    pool.sort((a, b) => b.verifiedEvidenceScore - a.verifiedEvidenceScore || b.recommendation - a.recommendation);
+    out.push(...pool.slice(0, perGrammar));
+  }
+  return out;
+}
+export function moreLike(shape, { count = 260, seed = Date.now() } = {}) {
+  const grammar = GRAMMARS.find(g => g.id === shape.archetypeId) ?? GRAMMARS[3], r = makeRng(seed), pool = [];
+  for (let i = 0; i < count * 3; i++) {
+    const t = i < count * 1.8 ? .10 : .20;
+    pool.push(makeShape(`MR_${shape.id}_${String(i + 1).padStart(3, '0')}`, grammar, r, {
+      height: clamp(shape.height + jitter(r, 18 * t), 58, 98), base: clamp(shape.base + jitter(r, 16 * t), 56, 92), rim: clamp(shape.rim + jitter(r, 18 * t), 82, 118), belly: clamp(shape.belly + jitter(r, .32 * t), .06, .86), waist: clamp(shape.waist + jitter(r, .28 * t), 0, .64), foot: clamp(shape.foot + jitter(r, .30 * t), .12, .90), lip: clamp(shape.lip + jitter(r, .30 * t), .05, .78), shoulder: clamp(shape.shoulder + jitter(r, .32 * t), .04, .82), quiet: clamp(shape.quiet + jitter(r, .22 * t), .34, .98), handle: clamp((shape.handle ?? .5) + jitter(r, .26 * t), .18, .86), steelSoftness: clamp((shape.steelSoftness ?? .84) + jitter(r, .12 * t), .68, .98)
+    }));
+  }
+  return pool.sort((a, b) => b.verifiedEvidenceScore - a.verifiedEvidenceScore).slice(0, count);
+}
+
+function mapPoint(point, side, opt, h) {
+  const scale = opt.scale ?? 1, top = opt.top ?? (opt.large ? 12 : 14), k = (opt.large ? 2.18 : 1.82) * scale, cx = opt.cx ?? 130;
+  return { x: cx + side * point.r * k, y: top + (h - point.y) * k };
+}
+function catmull(points) {
+  if (!points.length) return '';
+  const out = [`M ${round(points[0].x, 1)},${round(points[0].y, 1)}`];
+  const tension = .82;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[Math.max(0, i - 1)], p1 = points[i], p2 = points[i + 1], p3 = points[Math.min(points.length - 1, i + 2)];
+    const c1 = { x: p1.x + (p2.x - p0.x) / 6 * tension, y: p1.y + (p2.y - p0.y) / 6 * tension };
+    const c2 = { x: p2.x - (p3.x - p1.x) / 6 * tension, y: p2.y - (p3.y - p1.y) / 6 * tension };
+    out.push(`C ${round(c1.x, 1)},${round(c1.y, 1)} ${round(c2.x, 1)},${round(c2.y, 1)} ${round(p2.x, 1)},${round(p2.y, 1)}`);
+  }
+  return out.join(' ');
+}
+function pathFrom(points, opt = {}) {
+  const h = Math.max(...points.map(p => p.y));
+  const right = points.map(p => mapPoint(p, 1, opt, h));
+  const left = [...points].reverse().map(p => mapPoint(p, -1, opt, h));
+  return `${catmull(right)} ${catmull(left).replace(/^M /, 'L ')} Z`;
+}
+function handlePath(shape, opt = {}, side = 1) {
+  const size = opt.familySize ?? 330, s = size === 330 ? shape : familyAdapt(shape, size), pts = profilePoints(shape, size), scale = opt.scale ?? 1, top = opt.top ?? (opt.large ? 12 : 14), k = (opt.large ? 2.18 : 1.82) * scale, cx = opt.cx ?? 130, h = Math.max(...pts.map(p => p.y));
+  const maxR = Math.max(...pts.filter(p => p.y > h * .28 && p.y < h * .76).map(p => p.r));
+  const yTop = top + (h - h * (size <= 240 ? .66 : .69)) * k, yBot = top + (h - h * (size <= 240 ? .32 : .35)) * k, yMid = (yTop + yBot) / 2;
+  const inner = cx + side * (maxR * k + 4), outer = (16 + (s.handle ?? .5) * 18 + (size <= 240 ? 10 : 4)) * scale, xOut = inner + side * outer, hole = inner + side * Math.max(10, outer * .50), soft = 9 * scale;
+  return `M ${round(inner, 1)},${round(yTop, 1)} C ${round(xOut, 1)},${round(yTop - soft, 1)} ${round(xOut, 1)},${round(yBot + soft, 1)} ${round(inner, 1)},${round(yBot, 1)} C ${round(inner + side * 6, 1)},${round(yMid + 6, 1)} ${round(inner + side * 6, 1)},${round(yMid - 6, 1)} ${round(inner, 1)},${round(yTop, 1)} Z M ${round(inner + side * 7, 1)},${round(yTop + 12 * scale, 1)} C ${round(hole, 1)},${round(yTop + 6 * scale, 1)} ${round(hole, 1)},${round(yBot - 6 * scale, 1)} ${round(inner + side * 7, 1)},${round(yBot - 12 * scale, 1)} C ${round(inner + side * 12, 1)},${round(yMid + 1, 1)} ${round(inner + side * 12, 1)},${round(yMid - 1, 1)} ${round(inner + side * 7, 1)},${round(yTop + 12 * scale, 1)} Z`;
+}
+function handles(shape, opt = {}) {
+  const size = opt.familySize ?? 330, sides = size <= 240 ? [-1, 1] : [1];
+  return sides.map(side => `<path d="${handlePath(shape, opt, side)}" fill="currentColor" fill-rule="evenodd" class="handle-path"/>`).join('');
+}
+export function svg(shape, opt = {}) {
+  const large = !!opt.large, detail = !!opt.detail, viewBox = large || detail ? '0 0 260 300' : '0 0 260 250', tableY = large || detail ? 278 : 232, size = opt.familySize ?? 330, s = size === 330 ? shape : familyAdapt(shape, size), bodyOnly = !!opt.bodyOnly;
+  const cap = large || detail ? `<text x="130" y="294" text-anchor="middle" class="svg-caption">${size} ml · H ${Math.round(s.height)} · base ${Math.round(s.base)} · rim ${Math.round(s.rim)} · Ev ${Math.round((s.verifiedEvidenceScore ?? .7) * 100)}</text>` : '';
+  return `<svg viewBox="${viewBox}" role="img" aria-label="${shape.id} ${size} ml silhouette"><line x1="32" x2="228" y1="${tableY}" y2="${tableY}" class="table-line"/>${bodyOnly ? '' : handles(shape, { ...opt, large: large || detail })}<path d="${pathFrom(profilePoints(shape, size), { ...opt, large: large || detail })}" fill="currentColor" class="body-path"/>${cap}</svg>`;
+}
+export function designerRead(shape) {
+  const notes = [shape.archetypeName ?? 'Research geometry'];
+  if (shape.smoothCurvatureScore > .78) notes.push('smooth curvature prior');
+  if (shape.mayaScore > .70) notes.push('MAYA balanced');
+  if (shape.pressSafeScore > .72) notes.push('pressed-steel soft');
+  if (shape.familyCoherenceScore > .70) notes.push('family coherent');
+  if (shape.campingRisk > .50) notes.push('camping warning');
+  if (shape.angularRisk > .42) notes.push('angularity warning');
+  return `${notes.join(' · ')}.`;
+}
