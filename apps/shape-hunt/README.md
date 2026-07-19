@@ -56,11 +56,15 @@ Shape Hunt supports:
 - generation of hundreds/thousands of Table Line silhouettes;
 - modernized category grammars: Slavic, Viking/Nordic, Japan, Classic, French, Italian;
 - Gallery view with fast Good / Bad / Save / More Like This actions;
+- immediate **3-model preview** on every card: 120 / 240 / 330, with handles included;
+- automatic dimensional filters: All, Table dimension fit, Pressed steel safe, Road / cup-holder potential;
+- **Road Fit** view for testing whether saved DNA can translate into cup-holder-compatible travel bodies;
+- outsourced closure-system placeholder for travel models;
 - Sort modes: recommended, newest, soul score, table presence, strong foot, lower silhouettes, saved first;
 - archetype/category filtering;
 - hiding rejected shapes from the current batch;
 - **Brutal silhouette mode** for evaluating only the black contour;
-- Focus dialog with large silhouette, designer read and semantic tags;
+- Focus dialog with large silhouette, designer read, fit system and semantic tags;
 - Shortlist view;
 - A/B Tournament view;
 - **Family Matrix**: 3 variants × 3 primary sizes, with handles included;
@@ -73,7 +77,7 @@ Shape Hunt supports:
 
 ## Family Matrix
 
-For saved or Good candidates, the app now shows:
+For saved or Good candidates, the app shows:
 
 ```text
 3 variants × 3 sizes
@@ -90,6 +94,19 @@ Variants:
 - **C / Table Hero** — stronger table signature.
 
 440 ml remains part of the broader product platform, but the current visual selection focuses on the three primary Table Line sizes so we can judge body + handles more clearly.
+
+## Fit system
+
+The fit system treats dimensions as a design constraint, not a late-stage correction.
+
+Modes:
+
+- **All shapes** — browse everything.
+- **Table dimension fit** — only shapes whose 120 / 240 / 330 translations stay in the intended Table Line ranges.
+- **Pressed steel safe** — only softer, lower-angularity shapes likely to be safer for drawn steel and enamel.
+- **Road / cup-holder potential** — shapes whose DNA can plausibly translate to a travel body.
+
+Road line rules are intentionally separate from Table Line. A travel version should use a more vertical body, a narrow cup-holder base and a closure interface. Closure/lid design is treated as an outsourced module candidate, not solved inside Shape Hunt.
 
 ## Keyboard
 
@@ -115,8 +132,10 @@ The design funnel is:
 ```text
 Shape Hunt
   → shortlist 20–40 living silhouettes
+  → dimensional / production-safe screening
   → A/B tournament
   → family matrix 120/240/330 with handles
+  → Road Fit translation check
   → handle exploration
   → technical geometry/CAD
   → production feasibility
