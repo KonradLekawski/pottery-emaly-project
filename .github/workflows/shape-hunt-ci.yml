@@ -26,5 +26,7 @@ jobs:
           test -f apps/shape-hunt/index.html
           test -f apps/shape-hunt/styles.css
           test -f apps/shape-hunt/extensions.css
+          test -f apps/shape-hunt/cultural-engine.css
           test -f apps/shape-hunt/app.js
           test -f apps/shape-hunt/app-extensions.js
+          test -f apps/shape-hunt/app-cultural-engine.js
