@@ -1,0 +1,13 @@
+{
+  "name": "pottery-emaly-project",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Premium family enamelware platform — silhouette-first Table Line discovery tools.",
+  "scripts": {
+    "test": "node --check apps/shape-hunt/app.js",
+    "serve:shape-hunt": "python3 -m http.server 5173 --directory apps/shape-hunt"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
