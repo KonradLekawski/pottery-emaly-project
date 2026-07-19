@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shape Hunt — Pottery Emaly Project</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-lockup">
+          <div class="mark">○</div>
+          <div>
+            <div class="eyebrow">Pottery Emaly Project</div>
+            <h1>Shape Hunt</h1>
+          </div>
+        </div>
+
+        <p class="sidebar-copy">
+          Browse hundreds of cup silhouettes. Save the ones that feel alive. Reject the dead ones. Generate more around promising directions.
+        </p>
+
+        <nav class="tabs" aria-label="Views">
+          <button class="tab active" data-view="gallery">Gallery</button>
+          <button class="tab" data-view="shortlist">Shortlist</button>
+          <button class="tab" data-view="tournament">A/B</button>
+          <button class="tab" data-view="family">Family Check</button>
+        </nav>
+
+        <div class="control-block">
+          <label for="archetypeFilter">Archetype</label>
+          <select id="archetypeFilter">
+            <option value="all">All archetypes</option>
+          </select>
+        </div>
+
+        <div class="control-block">
+          <label for="densityRange">Batch size</label>
+          <input id="densityRange" type="range" min="120" max="900" step="60" value="600" />
+          <div class="range-readout"><span id="densityValue">600</span> silhouettes</div>
+        </div>
+
+        <div class="sidebar-actions">
+          <button id="generateBtn" class="primary">Generate batch</button>
+          <button id="exportBtn" class="secondary">Export feedback</button>
+          <button id="resetBtn" class="ghost">Reset decisions</button>
+        </div>
+
+        <div class="stats">
+          <div><strong id="countAll">0</strong><span>shown</span></div>
+          <div><strong id="countSaved">0</strong><span>saved</span></div>
+          <div><strong id="countGood">0</strong><span>good</span></div>
+          <div><strong id="countBad">0</strong><span>bad</span></div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <div class="eyebrow">Silhouette first</div>
+            <h2 id="viewTitle">Find the form that has soul.</h2>
+          </div>
+          <div class="shortcuts">
+            <span>G good</span>
+            <span>B bad</span>
+            <span>S save</span>
+            <span>M more</span>
+          </div>
+        </header>
+
+        <section id="galleryView" class="view active">
+          <div id="galleryGrid" class="gallery-grid"></div>
+        </section>
+
+        <section id="shortlistView" class="view">
+          <div class="section-intro">
+            <h3>Shortlist</h3>
+            <p>Saved silhouettes. This is the first rough field of forms worth revisiting.</p>
+          </div>
+          <div id="shortlistGrid" class="gallery-grid shortlist-grid"></div>
+        </section>
+
+        <section id="tournamentView" class="view">
+          <div class="section-intro">
+            <h3>A/B Tournament</h3>
+            <p>Choose which silhouette feels closer to the future brand. This is often more useful than absolute rating.</p>
+          </div>
+          <div id="tournamentStage" class="tournament-stage"></div>
+        </section>
+
+        <section id="familyView" class="view">
+          <div class="section-intro">
+            <h3>Family Check</h3>
+            <p>Saved 330 ml DNA translated to 120 / 240 / 330 / 440. This is still approximate, but it reveals whether the idea scales emotionally.</p>
+          </div>
+          <div id="familyBoard" class="family-board"></div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="focusDialog" class="focus-dialog">
+      <div class="focus-shell">
+        <button id="closeFocus" class="close-button" aria-label="Close">×</button>
+        <div class="focus-art" id="focusArt"></div>
+        <div class="focus-panel">
+          <div class="eyebrow" id="focusArchetype"></div>
+          <h2 id="focusTitle"></h2>
+          <p id="focusMeta" class="meta"></p>
+          <div class="focus-actions">
+            <button id="focusGood" class="primary">Good</button>
+            <button id="focusBad" class="secondary">Bad</button>
+            <button id="focusSave" class="secondary">Save</button>
+            <button id="focusMore" class="ghost">More like this</button>
+          </div>
+          <div class="tag-row" id="tagRow"></div>
+          <div class="design-notes">
+            <h4>Designer read</h4>
+            <p id="focusRead"></p>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>
