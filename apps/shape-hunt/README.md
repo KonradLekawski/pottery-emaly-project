@@ -78,6 +78,31 @@ Evidence
 
 The Evidence view ranks candidates by `verifiedEvidenceScore` and shows the main research-backed signals.
 
+## Map Lab
+
+Map Lab is the analysis workspace for understanding which variables matter.
+
+Map interaction modes:
+
+```text
+Inspect
+Good
+Bad
+Save
+More like this
+Clear
+```
+
+Dots are persistent:
+
+```text
+Good  = green, mapScore +1
+Bad   = red,   mapScore -1
+Saved = gold,  mapScore +2
+```
+
+These decisions are stored in browser `localStorage`, reflected in the map colors after reload and included in feedback export via the normal decision object.
+
 ## Current MVP
 
 Shape Hunt supports:
@@ -90,6 +115,7 @@ Shape Hunt supports:
 - **Road Fit** view for testing whether saved DNA can translate into cup-holder-compatible travel bodies;
 - outsourced closure-system placeholder for travel models;
 - **Evidence** view for research-backed candidate ranking;
+- **Map Lab** with variable axes, map click modes, persistent Good/Bad/Save coloring and mapScore;
 - Sort modes: recommended, newest, soul score, table presence, strong foot, lower silhouettes, saved first;
 - archetype/category filtering;
 - hiding rejected shapes from the current batch;
@@ -163,6 +189,7 @@ The design funnel is:
 ```text
 Shape Hunt
   → evidence-weighted silhouette discovery
+  → Map Lab / variable-space exploration
   → shortlist 20–40 living silhouettes
   → dimensional / production-safe screening
   → A/B tournament
@@ -180,6 +207,7 @@ Feedback is stored in browser `localStorage` and can be exported as JSON. The ex
 - generated shapes;
 - research/evidence scores;
 - Good / Bad / Save decisions;
+- persistent `mapScore` from Map Lab;
 - semantic tags;
 - decision history;
 - simple preference insight comparing saved/good vs rejected candidates.
